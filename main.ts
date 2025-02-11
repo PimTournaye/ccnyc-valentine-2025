@@ -2,6 +2,13 @@ import { broadcastNewSketch, handleSSE } from "./sse.ts";
 
 const kv = await Deno.openKv();
 
+type Submission = {
+  id: string;
+  embed: string;
+  creator: string | null;
+  timestamp: number;
+};
+
 /**
  * Handles the submission of a new iframe.
  *
@@ -40,13 +47,14 @@ async function handleSubmit(_req: Request): Promise<Response> {
 
 /**
  * Retrieves all stored iframe submissions.
- * Returns a JSON array of submissions.
+ * Returns a JSON array of submissions sorted from newest to oldest.
  */
 async function handleList(_req: Request): Promise<Response> {
-  const submissions = [];
+  const submissions: Submission[] = [];
   for await (const entry of kv.list({ prefix: ["iframe"] })) {
-    if (entry.value) submissions.push(entry.value);
+    if (entry.value) submissions.push(entry.value as Submission);
   }
+  submissions.sort((a, b) => b.timestamp - a.timestamp);
   return new Response(JSON.stringify(submissions), { headers: { "Content-Type": "application/json" } });
 }
 
