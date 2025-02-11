@@ -51,6 +51,20 @@ async function handleList(_req: Request): Promise<Response> {
 }
 
 /**
+ * Serves the index.html file when people go to the root URL.
+ */
+async function serveIndex(): Promise<Response> {
+  try {
+    const file = await Deno.readFile("./index.html");
+    return new Response(file, {
+      headers: { "Content-Type": "text/html" },
+    });
+  } catch {
+    return new Response("Not Found", { status: 404 });
+  }
+}
+
+/**
  * Routes incoming requests to the appropriate handler.
  * -  POST /submit: handles new iframe submissions
  * - GET /sketchest: retrieves all stored iframe submissions
@@ -60,6 +74,7 @@ async function handler(req: Request): Promise<Response> {
   if (url.pathname === "/submit" && req.method === "POST") return await handleSubmit(req);
   if (url.pathname === "/sketches" && req.method === "GET") return await handleList(req);
   if (url.pathname === "/events" && req.method === "GET") return handleSSE();
+  if (url.pathname === "/") return await serveIndex();
   return new Response("Not Found", { status: 404 });
 }
 
