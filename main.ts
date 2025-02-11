@@ -73,6 +73,24 @@ async function serveIndex(): Promise<Response> {
 }
 
 /**
+ * Serves static files from the static directory.
+ */
+async function serveStatic(req: Request): Promise<Response> {
+  const url = new URL(req.url);
+  const filePath = `.${url.pathname}`;
+  
+  try {
+    const file = await Deno.readFile(filePath);
+    const contentType = url.pathname.endsWith('.css') ? 'text/css' : 'text/plain';
+    return new Response(file, {
+      headers: { "Content-Type": contentType },
+    });
+  } catch {
+    return new Response("Not Found", { status: 404 });
+  }
+}
+
+/**
  * Routes incoming requests to the appropriate handler.
  * -  POST /submit: handles new iframe submissions
  * - GET /sketchest: retrieves all stored iframe submissions
@@ -82,6 +100,12 @@ async function handler(req: Request): Promise<Response> {
   if (url.pathname === "/submit" && req.method === "POST") return await handleSubmit(req);
   if (url.pathname === "/sketches" && req.method === "GET") return await handleList(req);
   if (url.pathname === "/events" && req.method === "GET") return handleSSE();
+   // Static files
+   if (url.pathname.startsWith("/static/")) {
+    return await serveStatic(req);
+  }
+  
+  // Index route
   if (url.pathname === "/") return await serveIndex();
   return new Response("Not Found", { status: 404 });
 }
