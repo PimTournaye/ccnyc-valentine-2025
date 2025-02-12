@@ -1,8 +1,9 @@
 function setup() {
-  createCanvas(400, 400);
+  var myCanvas = createCanvas(5000, 5000);
+  // myCanvas
 }
 
 function draw() {
-  background(220);
+  background(255,20,147);
   console.log('hi')
 }

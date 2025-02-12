@@ -6,6 +6,10 @@ html, body {
 
 canvas {
   display: block;
+  position: absolute;
+  z-index: -1;
+  left: 0;
+  top: 0;
 }
 
 .valentines-container {
@@ -24,4 +28,9 @@ iframe {
   min-height: 500px;
   max-width: 800px;
   max-height: 800px; */
+}
+
+.biggerFrame {
+  width: 800px;
+  height: 800px;
 }

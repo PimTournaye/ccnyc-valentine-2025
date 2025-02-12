@@ -3,19 +3,61 @@
   <head>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.1/p5.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.1/addons/p5.sound.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="/static/style.css">
+    
+    <script>
+      async function handleFormSubmit(event) {
+          event.preventDefault();
+
+          const embed = document.getElementById("embed").value;
+          const creator = document.getElementById("creator").value;
+
+          if (!embed) {
+              alert("Embed field is required!");
+              return;
+          }
+
+          const response = await fetch("/submit", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ embed, creator })
+          });
+
+          const result = await response.json();
+          const messageBox = document.getElementById("message");
+
+          if (response.ok) {
+              messageBox.innerHTML = `<p style="color: green;">Success! ID: ${result.id}</p>`;
+          } else {
+              messageBox.innerHTML = `<p style="color: red;">Error: ${result.error}</p>`;
+          }
+      }
+  </script>
+    <link rel="stylesheet" type="text/css" href="static/style.css">
     <meta charset="utf-8" />
 
   </head>
 
   <body>
     <main>
+      <h2>Submit Your Valentine<3</h2>
+      <form onsubmit="handleFormSubmit(event)">
+          <label for="embed">Embed:</label>
+          <input type="text" id="embed" name="embed" required><br><br>
+  
+          <label for="creator">Creator (optional):</label>
+          <input type="text" id="creator" name="creator"><br><br>
+  
+          <button type="submit">Submit</button>
+      </form>
     </main>
     <!-- <script src="sketch.js"></script> -->
 
     <div class="valentines-container">
+      <iframe src="https://urldefense.proofpoint.com/v2/url?u=https-3A__editor.p5js.org_taliahamburg10_full_axpJPktTW&d=DwICAg&c=slrrB7dE8n7gBJbeO0g-IQ&r=b6Wnh_Irvu1Kmz2A7P_5iA&m=rG0sgU4bnGCgOFJKVIC9U7VCEg5C9vBcFWn5fNUQSMqvit4h88nHPVZe9XGMLL42&s=C7LQ_KwsvhLwYoAGkouKaIAsh2r4IxolNQfjZ0pHh_Q&e= "></iframe>
+      <iframe src="https://editor.p5js.org/sv2366/full/RzDamSal8"></iframe>
+      <iframe src="https://editor.p5js.org/sashasolovyeva/full/9G5EkR1Wa" class="biggerFrame"></iframe>
       <iframe src="https://editor.p5js.org/sashasolovyeva/full/3-IEM8AyX" id="iFrame1"></iframe>
-      <iframe src="https://editor.p5js.org/sashasolovyeva/full/3-IEM8AyX" id="iFrame1"></iframe>
+
     </div>
   </body>
 </html>
